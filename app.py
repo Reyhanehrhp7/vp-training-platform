@@ -623,13 +623,19 @@ if "admin_unlocked" not in st.session_state:
     st.session_state.admin_unlocked = False
 if "assigned_combo" not in st.session_state:
     st.session_state.assigned_combo = ""
-if "query_assignment_applied" not in st.session_state:
-    st.session_state.query_assignment_applied = False
+if "last_query_signature" not in st.session_state:
+    st.session_state.last_query_signature = None
 
-if not st.session_state.query_assignment_applied:
+current_query_signature = (
+    str(st.query_params.get("combo", "")).strip().upper(),
+    str(st.query_params.get("participant", "")).strip().lower(),
+    str(st.query_params.get("session", "")).strip(),
+)
+
+if st.session_state.last_query_signature != current_query_signature:
     _apply_combo_from_query_params()
     _apply_participant_from_query_params()
-    st.session_state.query_assignment_applied = True
+    st.session_state.last_query_signature = current_query_signature
 
 
 def _prime_interview_start(case_key: str, is_vp_mode: bool) -> None:
